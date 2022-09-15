@@ -38,22 +38,38 @@ export function withCompress(handler: Handler): Handler {
 
     return await safeResponse(async () => {
       const res = await handler(req);
-      if (res.bodyUsed) return res;
 
       const encoder = SupportedEncodes[preferEncode];
-      const newResponse = res.clone();
-      const text = await newResponse.text();
-      const u8 = new TextEncoder().encode(text);
-      const body = encoder(u8, undefined);
-      const headers = mergeHeaders(
-        new Headers({
-          "Content-Encoding": preferEncode,
-          Vary: "Accept-Encoding",
-        }),
-        newResponse.headers,
-      );
 
-      return new Response(body, { ...newResponse, headers });
+      function encode(input: Uint8Array): Uint8Array {
+        return encoder(input, undefined);
+      }
+
+      return compressResponse(res, encode, preferEncode);
     });
   };
+}
+
+export async function compressResponse(
+  res: Response,
+  encoder: (input: Uint8Array) => Uint8Array,
+  format: string,
+): Promise<Response> {
+  const hasCompressed = res.headers.has("Content-Encoding");
+
+  if (hasCompressed || res.bodyUsed) return res;
+
+  const newRes = res.clone();
+  const text = await newRes.text();
+  const u8 = new TextEncoder().encode(text);
+  const body = encoder(u8);
+  const headers = mergeHeaders(
+    res.headers,
+    new Headers({
+      "Content-Encoding": format,
+      Vary: "Accept-Encoding",
+    }),
+  );
+
+  return new Response(body, { ...newRes, headers });
 }
