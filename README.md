@@ -60,6 +60,20 @@ const handler = withCompress(() => new Response("Huge content"), {
 Deno.serve(handler);
 ```
 
+## isCompressible
+
+Whether the media type is compressible or not.
+
+This refers to the [mime-db](https://github.com/jshttp/mime-db).
+
+```ts
+import { isCompressible } from "https://deno.land/x/http_compress@$VERSION/mod.ts";
+import { assertEquals } from "https://deno.land/std@$VERSION/testing/asserts.ts";
+
+assertEquals(isCompressible("text/html"), true);
+assertEquals(isCompressible("image/png"), false);
+```
+
 ## Spec
 
 Supported compression method is follow:
