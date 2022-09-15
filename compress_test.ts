@@ -1,99 +1,182 @@
-import { compressResponse } from "./compress.ts";
-import { expect, Fn } from "./dev_deps.ts";
-import { deflate, gzip } from "./deps.ts";
+import { withCompress } from "./compress.ts";
+import { describe, expect, it } from "./dev_deps.ts";
 
-Deno.test("compressResponse should pass", async () => {
-  const loadedResponse = new Response("text");
+describe("withCompress", () => {
+  it("should compress when body size is greater than 10kb by default", async () => {
+    const handler = withCompress(() => new Response("a".repeat(10241)));
 
-  await loadedResponse.text();
-
-  const table: Fn<typeof compressResponse>[] = [
-    [
-      new Response("test"),
-      (input) => gzip(input, undefined),
-      "gzip",
-      Promise.resolve(
-        new Response("test", {
-          headers: {
-            "content-encoding": "gzip",
-            vary: "Accept-Encoding",
-          },
-        }),
-      ),
-    ],
-    [
-      new Response("test"),
-      (input) => deflate(input, undefined),
-      "deflate",
-      Promise.resolve(
-        new Response("test", {
-          headers: {
-            "content-encoding": "deflate",
-            vary: "Accept-Encoding",
-          },
-        }),
-      ),
-    ],
-    [
-      new Response("test", {
+    const res = await handler(
+      new Request("http://localhost", {
         headers: {
-          "content-encoding": "",
+          "Accept-Encoding": "gzip",
         },
       }),
-      (input) => deflate(input, undefined),
-      "deflate",
-      Promise.resolve(
-        new Response("test", {
-          headers: {
-            "content-encoding": "",
-          },
-        }),
-      ),
-    ],
-    [
-      new Response("test", {
-        headers: {
-          vary: "test",
-        },
-      }),
-      (input) => deflate(input, undefined),
-      "deflate",
-      Promise.resolve(
-        new Response("test", {
-          headers: {
-            "content-encoding": "deflate",
-            vary: "test, Accept-Encoding",
-          },
-        }),
-      ),
-    ],
-    [
-      loadedResponse,
-      (input) => deflate(input, undefined),
-      "deflate",
-      Promise.resolve(loadedResponse),
-    ],
-  ];
-
-  await Promise.all(table.map(async ([res, encoder, format, result]) => {
-    expect(await compressResponse(res, encoder, format)).toEqualResponse(
-      await result,
     );
-  }));
-});
 
-Deno.test("compressResponse should not change original response object", async () => {
-  const res = new Response("test");
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+          "Content-Encoding": "gzip",
+          Vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
 
-  const newRes = await compressResponse(
-    res,
-    (input) => gzip(input, undefined),
-    "gzip",
-  );
+  it("should compress when the request does not have accept-encoding header", async () => {
+    const handler = withCompress(() => new Response("a".repeat(10241)));
 
-  expect(res.headers.has("vary")).toBeFalsy();
-  expect(res.bodyUsed).toBeFalsy();
+    const res = await handler(
+      new Request("http://localhost"),
+    );
 
-  expect(newRes.headers.has("vary")).toBeTruthy();
-  expect(newRes.bodyUsed).toBeFalsy();
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+          "Content-Encoding": "gzip",
+          Vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
+
+  it("should not compress when the request accept-encoding header is identity", async () => {
+    const handler = withCompress(() => new Response("a".repeat(10241)));
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "accept-encoding": "abc",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+        },
+      }),
+    );
+  });
+
+  it("should override compress filter", async () => {
+    const handler = withCompress(() => new Response("test"), {
+      filter: () => true,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "gzip",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+          "Content-Encoding": "gzip",
+          Vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
+
+  it("should not compress when the filter value is false", async () => {
+    const handler = withCompress(() => new Response("a".repeat(100000)), {
+      filter: () => false,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "gzip",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+        },
+      }),
+    );
+  });
+
+  it("should not compress when the response has compressed", async () => {
+    const handler = withCompress(() =>
+      new Response("", {
+        headers: {
+          "Content-Encoding": "",
+        },
+      }), {
+      filter: () => true,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "gzip",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+          "Content-Encoding": "",
+        },
+      }),
+    );
+  });
+
+  it("should not compress when body size is less than or equal to 10kb by default", async () => {
+    const handler = withCompress(() => new Response("a".repeat(10240)));
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "gzip",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-type": "text/plain;charset=UTF-8",
+        },
+      }),
+    );
+  });
+
+  it("should compress by deflate", async () => {
+    const handler = withCompress(() => new Response(""), {
+      filter: () => true,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "deflate",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-encoding": "deflate",
+          "content-type": "text/plain;charset=UTF-8",
+          vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
 });
