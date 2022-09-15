@@ -30,6 +30,34 @@ function handler(req: Request): Response {
 Deno.serve(withCompress(handler));
 ```
 
+## Filter compression targets
+
+You have complete control over what is compressed.
+
+Various factors such as content length, media type, CPU usage, etc. can be used
+as filtering criteria.
+
+The `filter` field is a function that takes a `boolean`. If `true`, responses
+containing that content will be compressed.
+
+By default, only content larger than 10kb will be compressed.
+
+The following example compresses when the content is more than 10kb, the media
+type is `text/html`, and request method is `GET`.
+
+```ts
+import { withCompress } from "https://deno.land/x/http_compress@$VERSION/mod.ts";
+
+const handler = withCompress(() => new Response("Huge content"), {
+  filter: (content, { request, response }) => {
+    return 1024_0 < content.byteLength && // 10kb
+      request.method === "GET" &&
+      response.headers.get("Content-Type") === "text/html";
+  },
+});
+Deno.serve(handler);
+```
+
 ## Spec
 
 Create a new `Response` object with the compressed value of the response body.

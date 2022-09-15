@@ -23,7 +23,7 @@ export interface CompressOptions {
    *
    * @defaultValue {@link defaultFilter}
    */
-  readonly filter: (input: Uint8Array, context: FilterContext) => boolean;
+  readonly filter: (content: Uint8Array, context: FilterContext) => boolean;
 }
 
 /** Filter context. */
@@ -35,8 +35,8 @@ export interface FilterContext {
   readonly response: Response;
 }
 
-const defaultFilter: CompressOptions["filter"] = (input) => {
-  return 1024_0 < input.byteLength;
+const defaultFilter: CompressOptions["filter"] = (content) => {
+  return 1024_0 < content.byteLength;
 };
 
 /** Takes a handler and returns a handler with the response body compressed.
