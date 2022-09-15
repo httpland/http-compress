@@ -10,6 +10,8 @@
 
 Compress HTTP response, supported Web standard compression methods
 
+gzip, deflate and brotli is built-in.
+
 ## Packages
 
 The package supports multiple platforms.
@@ -59,6 +61,12 @@ Deno.serve(handler);
 ```
 
 ## Spec
+
+Supported compression method is follow:
+
+- gzip
+- deflate
+- brotli
 
 Create a new `Response` object with the compressed value of the response body.
 

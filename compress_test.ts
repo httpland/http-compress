@@ -179,4 +179,52 @@ describe("withCompress", () => {
       }),
     );
   });
+
+  it("should compress by br", async () => {
+    const handler = withCompress(() => new Response(""), {
+      filter: () => true,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "br",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-encoding": "br",
+          "content-type": "text/plain;charset=UTF-8",
+          vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
+
+  it("should compress in order of priority", async () => {
+    const handler = withCompress(() => new Response(""), {
+      filter: () => true,
+    });
+
+    const res = await handler(
+      new Request("http://localhost", {
+        headers: {
+          "Accept-Encoding": "deflate, br, gzip",
+        },
+      }),
+    );
+
+    expect(res).toEqualResponse(
+      new Response(null, {
+        headers: {
+          "content-encoding": "deflate",
+          "content-type": "text/plain;charset=UTF-8",
+          vary: "Accept-Encoding",
+        },
+      }),
+    );
+  });
 });

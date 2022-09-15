@@ -1,18 +1,10 @@
+import { Encode, Encoders, encodes } from "./encodes.ts";
 import {
   acceptsEncodings,
-  deflate,
-  gzip,
   Handler,
   mergeHeaders,
   safeResponse,
 } from "./deps.ts";
-
-const SupportedEncodes = {
-  gzip,
-  deflate,
-} as const;
-
-type SupportedEncode = keyof typeof SupportedEncodes;
 
 /** Compress options. */
 export interface CompressOptions {
@@ -54,25 +46,18 @@ export function withCompress(
   handler: Handler,
   options: CompressOptions = { filter: defaultFilter },
 ): Handler {
-  const supportedEncodings = Object.keys(SupportedEncodes);
-
   return async (req) => {
     const preferEncode = acceptsEncodings(
       req,
-      ...supportedEncodings,
+      ...encodes,
       "identity",
-    ) as SupportedEncode | "identity" | undefined;
+    ) as Encode | "identity" | undefined;
 
     if (!preferEncode || !isSupportedEncode(preferEncode)) return handler(req);
 
     return await safeResponse(async () => {
       const res = await handler(req.clone());
-      const encoder = SupportedEncodes[preferEncode];
-
-      function encode(input: Uint8Array): Uint8Array {
-        return encoder(input, undefined);
-      }
-
+      const encoder = Encoders[preferEncode];
       const hasCompressed = res.headers.has("Content-Encoding");
 
       if (hasCompressed || res.bodyUsed) return res;
@@ -88,7 +73,7 @@ export function withCompress(
 
       if (!result) return res;
 
-      const body = encode(u8);
+      const body = encoder(u8);
       const headers = mergeHeaders(
         res.headers,
         new Headers({
@@ -102,8 +87,6 @@ export function withCompress(
   };
 }
 
-function isSupportedEncode(value: string): value is SupportedEncode {
-  const supportedEncodings = Object.keys(SupportedEncodes);
-
-  return supportedEncodings.includes(value);
+function isSupportedEncode(value: string): value is Encode {
+  return encodes.includes(value);
 }
