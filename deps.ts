@@ -7,4 +7,4 @@ export { acceptsEncodings } from "https://deno.land/std@0.155.0/http/negotiation
 export { deflate, gzip } from "https://deno.land/x/denoflate@1.2.1/mod.ts";
 export { compress as brotli } from "https://deno.land/x/brotli@v0.1.4/mod.ts";
 export { default as db } from "https://deno.land/std@0.155.0/media_types/vendor/mime-db.v1.52.0.ts";
-export { contentType } from "https://deno.land/std@0.155.0/media_types/mod.ts";
+export { parseMediaType } from "https://deno.land/std@0.155.0/media_types/mod.ts";

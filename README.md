@@ -42,7 +42,8 @@ as filtering criteria.
 The `filter` field is a function that takes a `boolean`. If `true`, responses
 containing that content will be compressed.
 
-By default, only content larger than 10kb will be compressed.
+By default, If the content is more than 10kb and its media type is compressible,
+compress it.
 
 The following example compresses when the content is more than 10kb, the media
 type is `text/html`, and request method is `GET`.

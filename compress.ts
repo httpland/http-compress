@@ -1,8 +1,10 @@
 import { Encode, Encoders, encodes } from "./encodes.ts";
+import { isCompressible } from "./utils.ts";
 import {
   acceptsEncodings,
   Handler,
   mergeHeaders,
+  parseMediaType,
   safeResponse,
 } from "./deps.ts";
 
@@ -27,8 +29,22 @@ export interface FilterContext {
   readonly response: Response;
 }
 
-const defaultFilter: CompressOptions["filter"] = (content) => {
-  return 1024_0 < content.byteLength;
+export const defaultFilter: CompressOptions["filter"] = (
+  content,
+  { response },
+) => {
+  if (content.byteLength < 1024_0) return false;
+
+  const type = response.headers.get("content-type");
+
+  if (!type) return false;
+
+  try {
+    const [mediaType] = parseMediaType(type);
+    return isCompressible(mediaType);
+  } catch {
+    return false;
+  }
 };
 
 /** Takes a handler and returns a handler with the response body compressed.
