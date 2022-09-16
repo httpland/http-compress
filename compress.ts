@@ -76,7 +76,7 @@ export function withCompress(
     return await safeResponse(async () => {
       const res = await handler(req.clone());
       const encoder = Encoders[preferEncode];
-      const hasCompressed = res.headers.has("Content-Encoding");
+      const hasCompressed = res.headers.has("content-encoding");
 
       if (hasCompressed || res.bodyUsed) return res;
 
@@ -95,8 +95,8 @@ export function withCompress(
       const headers = mergeHeaders(
         res.headers,
         new Headers({
-          "Content-Encoding": preferEncode,
-          Vary: "Accept-Encoding",
+          "content-encoding": preferEncode,
+          vary: "accept-encoding",
         }),
       );
 
