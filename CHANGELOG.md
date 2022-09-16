@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/httpland/http-compress/compare/1.0.0...1.0.1) (2022-09-16)
+
+
+### Performance Improvements
+
+* **compress:** improve unit8array convertion speed ([70be44d](https://github.com/httpland/http-compress/commit/70be44dc4415632b4b4576055f6b7768a39e1d63))
+
 ## [1.0.1-beta.1](https://github.com/httpland/http-compress/compare/1.0.0...1.0.1-beta.1) (2022-09-16)
 
 
