@@ -1,3 +1,5 @@
+// Copyright 2022-latest the httpland authors. All rights reserved. MIT license.
+
 import { Encode, Encoders, encodes } from "./encodes.ts";
 import { isCompressible } from "./utils.ts";
 import {
