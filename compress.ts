@@ -79,8 +79,8 @@ export function withCompress(
       if (hasCompressed || res.bodyUsed) return res;
 
       const newRes = res.clone();
-      const text = await newRes.text();
-      const u8 = new TextEncoder().encode(text);
+      const buffer = await newRes.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
       const context: FilterContext = {
         request: req.clone(),
         response: res.clone(),
