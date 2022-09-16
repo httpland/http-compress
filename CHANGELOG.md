@@ -1,3 +1,12 @@
+# [1.0.0-beta.3](https://github.com/httpland/http-compress/compare/1.0.0-beta.2...1.0.0-beta.3) (2022-09-16)
+
+
+### Features
+
+* **compress:** add compression of brotil method ([0b883bb](https://github.com/httpland/http-compress/commit/0b883bbc3b9c3de727d6c16d50405b863051b67d))
+* **compress:** change default filter that check the content is compressible or not ([d35aea5](https://github.com/httpland/http-compress/commit/d35aea5b3234671fadd6ddf4fbd3c432dc02684f))
+* **utils:** add `isCompressible` function and export ([c6b6b60](https://github.com/httpland/http-compress/commit/c6b6b602a61246c9cd1a461a43fda53995a3e3df))
+
 # [1.0.0-beta.2](https://github.com/httpland/http-compress/compare/1.0.0-beta.1...1.0.0-beta.2) (2022-09-15)
 
 
