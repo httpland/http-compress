@@ -1,3 +1,5 @@
+// Copyright 2022-latest the httpland authors. All rights reserved. MIT license.
+
 import { Encode, Encoders, encodes } from "./encodes.ts";
 import { isCompressible } from "./utils.ts";
 import {
@@ -79,8 +81,8 @@ export function withCompress(
       if (hasCompressed || res.bodyUsed) return res;
 
       const newRes = res.clone();
-      const text = await newRes.text();
-      const u8 = new TextEncoder().encode(text);
+      const buffer = await newRes.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
       const context: FilterContext = {
         request: req.clone(),
         response: res.clone(),

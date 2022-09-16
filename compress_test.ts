@@ -27,6 +27,14 @@ Deno.test("defaultFilter should pass", () => {
       request,
       response: new Response(null, {
         headers: {
+          "content-type": ";a",
+        },
+      }),
+    }, false],
+    [input, {
+      request,
+      response: new Response(null, {
+        headers: {
           "content-type": "unknown",
         },
       }),

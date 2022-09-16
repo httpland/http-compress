@@ -1,3 +1,5 @@
+// Copyright 2022-latest the httpland authors. All rights reserved. MIT license.
+
 export {
   type CompressOptions,
   type FilterContext,

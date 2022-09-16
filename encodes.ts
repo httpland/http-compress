@@ -1,3 +1,6 @@
+// Copyright 2022-latest the httpland authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
 import { brotli as br, deflate as _deflate, gzip as _gzip } from "./deps.ts";
 
 export interface Encoder {
