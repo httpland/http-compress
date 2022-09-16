@@ -69,7 +69,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -78,8 +78,8 @@ describe("withCompress", () => {
       new Response(null, {
         headers: {
           "content-type": "text/plain;charset=UTF-8",
-          "Content-Encoding": "gzip",
-          Vary: "Accept-Encoding",
+          "content-encoding": "gzip",
+          vary: "accept-encoding",
         },
       }),
     );
@@ -96,8 +96,8 @@ describe("withCompress", () => {
       new Response(null, {
         headers: {
           "content-type": "text/plain;charset=UTF-8",
-          "Content-Encoding": "gzip",
-          Vary: "Accept-Encoding",
+          "content-encoding": "gzip",
+          vary: "accept-encoding",
         },
       }),
     );
@@ -131,7 +131,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -140,8 +140,8 @@ describe("withCompress", () => {
       new Response(null, {
         headers: {
           "content-type": "text/plain;charset=UTF-8",
-          "Content-Encoding": "gzip",
-          Vary: "Accept-Encoding",
+          "content-encoding": "gzip",
+          vary: "accept-encoding",
         },
       }),
     );
@@ -155,7 +155,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -173,7 +173,7 @@ describe("withCompress", () => {
     const handler = withCompress(() =>
       new Response("", {
         headers: {
-          "Content-Encoding": "",
+          "content-encoding": "",
         },
       }), {
       filter: () => true,
@@ -182,7 +182,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -191,7 +191,7 @@ describe("withCompress", () => {
       new Response(null, {
         headers: {
           "content-type": "text/plain;charset=UTF-8",
-          "Content-Encoding": "",
+          "content-encoding": "",
         },
       }),
     );
@@ -203,7 +203,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -229,7 +229,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "gzip",
+          "accept-encoding": "gzip",
         },
       }),
     );
@@ -251,7 +251,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "deflate",
+          "accept-encoding": "deflate",
         },
       }),
     );
@@ -261,7 +261,7 @@ describe("withCompress", () => {
         headers: {
           "content-encoding": "deflate",
           "content-type": "text/plain;charset=UTF-8",
-          vary: "Accept-Encoding",
+          vary: "accept-encoding",
         },
       }),
     );
@@ -275,7 +275,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "br",
+          "accept-encoding": "br",
         },
       }),
     );
@@ -285,7 +285,7 @@ describe("withCompress", () => {
         headers: {
           "content-encoding": "br",
           "content-type": "text/plain;charset=UTF-8",
-          vary: "Accept-Encoding",
+          vary: "accept-encoding",
         },
       }),
     );
@@ -299,7 +299,7 @@ describe("withCompress", () => {
     const res = await handler(
       new Request("http://localhost", {
         headers: {
-          "Accept-Encoding": "deflate, br, gzip",
+          "accept-encoding": "deflate, br, gzip",
         },
       }),
     );
@@ -309,7 +309,7 @@ describe("withCompress", () => {
         headers: {
           "content-encoding": "deflate",
           "content-type": "text/plain;charset=UTF-8",
-          vary: "Accept-Encoding",
+          vary: "accept-encoding",
         },
       }),
     );
