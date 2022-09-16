@@ -2,6 +2,9 @@
   "tasks": {
     "test": "deno test --unstable --doc"
   },
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  },
   "fmt": {
     "files": {
       "exclude": ["CHANGELOG.md", "CODE_OF_CONDUCT.md"]
