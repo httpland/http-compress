@@ -2,7 +2,7 @@
 
 [![deno land](http://img.shields.io/badge/available%20on-deno.land/x-lightgrey.svg?logo=deno)](https://deno.land/x/http_compress)
 [![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/http_compress/mod.ts)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/httpland/http_compress)](https://github.com/httpland/http-compress/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/httpland/http-compress)](https://github.com/httpland/http-compress/releases)
 [![codecov](https://codecov.io/github/httpland/http-compress/branch/main/graph/badge.svg?token=9TOU2NJC20)](https://codecov.io/github/httpland/http-compress)
 [![GitHub](https://img.shields.io/github/license/httpland/http-compress)](https://github.com/httpland/http-compress/blob/main/LICENSE)
 
